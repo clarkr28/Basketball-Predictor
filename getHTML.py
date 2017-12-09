@@ -2,8 +2,9 @@
 
 import requests
 from basketballHTMLParser import *
-url = 'https://www.sports-reference.com/cbb/schools/michigan-state/2017-gamelogs-advanced.html'
+url = 'https://www.sports-reference.com/cbb/schools/michigan-state/2018-gamelogs.html'
 
 response = requests.get(url)
-parser = AdvancedGamelogHTMLParser()
+parser = GamelogHTMLParser()
 parser.feed(response.text)
+table = parser.getTable()
