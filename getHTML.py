@@ -2,10 +2,16 @@
 
 import requests
 from basketballHTMLParser import *
-url = 'https://www.sports-reference.com/cbb/schools/michigan-state/2018-gamelogs.html'
+urlStart = 'https://www.sports-reference.com/cbb/schools/'
+urlEnd = '/2018-gamelogs.html'
 
-response = requests.get( url )
-parser = GamelogHTMLParser()
-parser.feed( response.text )
-table = parser.getTable()
-print( table )
+"""
+gets the current season data for a specified team
+parameter: the url for the team in sports-reference.com's website
+return: table where each row contains the stats for a game
+"""
+def getCurrentSeason( teamUrl ):
+  response = requests.get( urlStart + teamUrl + urlEnd )
+  parser = GamelogHTMLParser()
+  parser.feed( response.text )
+  return parser.getTable()

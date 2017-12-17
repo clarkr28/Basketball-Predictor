@@ -42,9 +42,6 @@ class GamelogHTMLParser(HTMLParser):
   # full size of a row
   FullRowSize = 39
 
-  # True if the parsing is inside the table, False otherwise
-  inTable = False
-
   # holds the state of where the parser is
   currState = ParserState.NotInTable
 
@@ -53,6 +50,28 @@ class GamelogHTMLParser(HTMLParser):
 
   # all of the data for the team's season
   seasonData = []
+
+ 
+  # initialization
+  def __init__(self):
+
+    HTMLParser.__init__(self)  # call the base class initialization 
+
+    # id of the table
+    self.TableId = 'sgl-basic'
+
+    # full size of a row
+    self.FullRowSize = 39
+
+    # holds the state of where the parser is
+    self.currState = ParserState.NotInTable
+
+    # holds the data for the current row
+    self.rowData = []
+
+    # all of the data for the team's season
+    self.seasonData = []
+  
 
   # return the entire data table
   def getTable(self):
