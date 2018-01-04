@@ -4,7 +4,6 @@ from getHTML import *
 from dbMethods import createDBConnection, updateDBSeason
 
 TeamsFileName = 'teams.txt'
-DBFileName = 'stats.db'
 
 if __name__ == '__main__':
   
@@ -14,7 +13,7 @@ if __name__ == '__main__':
   teams.close()
 
   # open a connection to the database
-  dbConn = createDBConnection( DBFileName )
+  dbConn = createDBConnection()
   
   # for every team, get their current season's stats
   for team in teamsList:
@@ -31,4 +30,6 @@ if __name__ == '__main__':
     updateDBSeason( dbConn, season )
 
 
+  # close the database connection
+  dbConn.close()
 

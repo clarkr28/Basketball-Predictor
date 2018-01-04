@@ -3,16 +3,17 @@
 import sqlite3
 from sqlite3 import Error
 
-TableName = 'stats'
+TableName = 'games'
+DBFileName = 'gameData.db'
 
 """
 open the database and make sure the database has the correct table created
 param: fileName - the filename of the database
 """
-def createDBConnection( fileName ):
+def createDBConnection():
 
   # open a sqlite connection and get a cursor
-  conn = sqlite3.connect( fileName )
+  conn = sqlite3.connect( DBFileName )
   curs = conn.cursor()
 
   # try creating the table
