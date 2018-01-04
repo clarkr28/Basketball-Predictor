@@ -26,12 +26,15 @@ def isInt(x):
     return x.find('.') == -1
 
 
+
 class ParserState(Enum):
   # define all of the states
   NotInTable = 1
   InTable = 2 
   InTableBody = 3
   InRow = 4
+  InSmall = 5
+
 
 
 class GamelogHTMLParser(HTMLParser):
@@ -73,9 +76,11 @@ class GamelogHTMLParser(HTMLParser):
     self.seasonData = []
   
 
+
   # return the entire data table
   def getTable(self):
     return self.seasonData
+
 
 
   def handle_starttag(self, tag, attrs):
@@ -96,6 +101,11 @@ class GamelogHTMLParser(HTMLParser):
     # move current state to in row if necessary
     elif self.currState == ParserState.InTableBody and tag == 'tr':
       self.currState = ParserState.InRow
+
+    # move current state to small if necessary
+    elif self.currState == ParserState.InRow and tag == 'small':
+      self.currState = ParserState.InSmall
+
 
 		
   def handle_endtag(self, tag):
@@ -123,6 +133,11 @@ class GamelogHTMLParser(HTMLParser):
         self.rowData.insert(2, 'H')
       self.seasonData.append(self.rowData) # append entire row to season data
       self.rowData = []                    # set to empty for next row
+
+    # if currently in small and the endtag is small, change state to InRow
+    elif self.currState == ParserState.InSmall and tag == 'small':
+      self.currState = ParserState.InRow
+
 
 
   def handle_data(self, data):

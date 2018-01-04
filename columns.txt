@@ -1,0 +1,41 @@
+school name TEXT
+season year INTEGER
+game number INTEGER
+date INTEGER
+location TEXT
+opponent TEXT
+game result TEXT
+school points INTEGER
+opponent points INTEGER
+school field goals (SFG) INTEGER
+school field goal attempts (SFGA) INTEGER
+school field goal percentage (SFGP) REAL
+school 3-point field goals (S3P) INTEGER
+school 3-point attempts (S3PA) INTEGER
+school 3-point percentage (S3PP) REAL
+school free throws (SFT) INTEGER
+school free throw attempts (SFTA) INTEGER
+school free throw percentage (SFTP) REAL
+school offensive rebounds (SORB) INTEGER
+school total rebounds (STRB) INTEGER
+school assists (SAST) INTEGER
+school steals (SSTL) INTEGER
+school blocks (SBLK) INTEGER
+school turnovers (STOV) INTEGER
+school personal fouls (SPF) INTEGER
+opponent field goals (OFG) INTEGER
+opponent field goal attempts (OFGA) INTEGER
+opponent field goal percentage (OFGP) REAL
+opponent 3-point field goals (O3P) INTEGER
+opponent 3-point attempts (O3PA) INTEGER
+opponent 3-point percentage (O3PP) REAL
+opponent free throws (OFT) INTEGER
+opponent free throw attempts (OFTA) INTEGER
+opponent free throw percentage (OFTP) REAL
+opponent offensive rebounds (OORB) INTEGER
+opponent total rebounds (OTRB) INTEGER
+opponent assists (OAST) INTEGER
+opponent steals (OSTL) INTEGER
+opponent blocks (OBLK) INTEGER
+opponent turnovers (OTOV) INTEGER
+opponent personal fouls (OPF) INTEGER
