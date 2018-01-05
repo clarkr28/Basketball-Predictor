@@ -2,6 +2,7 @@
 
 import requests
 from basketballHTMLParser import *
+from schoolsHTMLParser import *
 
 CurrentSeasonYear = 2018
 UrlStart = 'https://www.sports-reference.com/cbb/schools/'
@@ -23,3 +24,22 @@ def getCurrentSeason( teamUrl ):
     row = row.insert( 0, CurrentSeasonYear )
 
   return table
+
+
+
+"""
+returns a table containing all of the schools on the sports-reference.com
+page for basketball
+"""
+def getSchools():
+  
+  # make the get request to get the HTML
+  response = requests.get( UrlStart )
+  # create the parser and feed the response into the parser
+  parser = SchoolsHTMLParser()
+  parser.feed( response.text )
+  # get the final table from the parser
+  table = parser.getTable() 
+  # return the table
+  return table
+
