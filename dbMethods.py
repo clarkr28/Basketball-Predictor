@@ -59,7 +59,6 @@ def updateDBSeason( conn, fullSeasonData ):
       '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)' 
   try:
     curs.executemany(query, fullSeasonData)
-    print( fullSeasonData[0][0] )
   except Error as e:
     print('error in dbMethods::updateDBSeason')
     print(e)

@@ -15,20 +15,20 @@ if __name__ == '__main__':
   # open a connection to the database
   dbConn = createDBConnection()
   
-  # for every team, get their current season's stats
+  # for every team, get their current season's games
   for team in teamsList:
 
-    # file is in CSV format, so split line on the commas 
-    teamSplit = team.split(',')
-    # get the current season by passing the team's URL
-    season = getCurrentSeason( teamSplit[0] )
+    team = team.strip() # strip to avoid whitespace
+    season = getCurrentSeason( team ) # get the current season by for the team
     # insert the team's name at the beginning of each row
     for row in season:
-      row = row.insert( 0, teamSplit[1] )
+      row = row.insert( 0, team )
+
+    # print the team name and year of the team
+    print( season[0][0], season[0][1] )
 
     # update the database with any new games 
     updateDBSeason( dbConn, season )
-
 
   # close the database connection
   dbConn.close()

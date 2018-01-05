@@ -34,6 +34,7 @@ class ParserState(Enum):
   InTableBody = 3
   InRow = 4
   InSmall = 5
+  InOpponent = 6
 
 
 
@@ -42,8 +43,17 @@ class GamelogHTMLParser(HTMLParser):
   # id of the table
   TableId = 'sgl-basic'
 
+  # id of the opponent cell
+  OpponentId = 'opp_id'
+
   # full size of a row
   FullRowSize = 39
+
+  # True if there was a link to the opponent's page - if there was no link, 
+  # that means sports-reference.com does not have data for that team.  If this
+  # is the case, don't add the game to the season's data b/c there is no way 
+  # to get more information about the team
+  opponentLinkFound = False
 
   # holds the state of where the parser is
   currState = ParserState.NotInTable
@@ -63,8 +73,14 @@ class GamelogHTMLParser(HTMLParser):
     # id of the table
     self.TableId = 'sgl-basic'
 
+    # id of the opponent cell
+    self.OpponentId = 'opp_id'
+
     # full size of a row
     self.FullRowSize = 39
+
+    # initialize to false
+    self.opponentLinkFound = False
 
     # holds the state of where the parser is
     self.currState = ParserState.NotInTable
@@ -106,6 +122,23 @@ class GamelogHTMLParser(HTMLParser):
     elif self.currState == ParserState.InRow and tag == 'small':
       self.currState = ParserState.InSmall
 
+    # move current state to inOpponent if necessary
+    elif self.currState == ParserState.InRow and tag == 'td':
+      # see if the cell id is the opponent id
+      for att in attrs:
+        if att[0] == 'data-stat' and att[1] == self.OpponentId:
+          self.currState = ParserState.InOpponent
+
+    # if current state is in opponent and tag is a link, add href to data row
+    elif self.currState == ParserState.InOpponent and tag == 'a':
+      for att in attrs:
+        if att[0] == 'href':
+          # append only the school name from the href - should be in the
+          # format '/cbb/schools/school-name/year.html'
+          self.rowData.append( att[1].split('/')[3] )
+          # remember that we found the opponent link for later
+          self.opponentLinkFound = True
+
 
 		
   def handle_endtag(self, tag):
@@ -131,11 +164,20 @@ class GamelogHTMLParser(HTMLParser):
       # should be, insert a 'H' into the row to show it as a home game.
       if len( self.rowData ) == self.FullRowSize - 1:
         self.rowData.insert(2, 'H')
-      self.seasonData.append(self.rowData) # append entire row to season data
+
+      # only append the game to the season if the opponent link was found
+      if self.opponentLinkFound == True:
+        self.seasonData.append(self.rowData) # append entire row to season data
+        self.opponentLinkFound = False       # reset back to false
+
       self.rowData = []                    # set to empty for next row
 
     # if currently in small and the endtag is small, change state to InRow
     elif self.currState == ParserState.InSmall and tag == 'small':
+      self.currState = ParserState.InRow
+
+    # if currently in opponent field and endtag is td, change to InRow
+    elif self.currState == ParserState.InOpponent and tag == 'td':
       self.currState = ParserState.InRow
 
 
