@@ -67,3 +67,20 @@ def updateDBSeason( conn, fullSeasonData ):
   curs.close()
 
   return
+
+
+
+"""
+get a game based on the school name, year, and game number
+param
+return list of stats for the game
+"""
+def getGameByNumber( conn, schoolName, year, gameNumber ):
+
+  curs = conn.cursor()
+  query = 'SELECT * FROM ' + TableName + \
+      ' WHERE SCHOOL=? and SEASON=? and  GAME_NUM=?'
+  curs.execute( query, (schoolName, year, gameNumber) )
+
+  return curs.fetchall()
+
