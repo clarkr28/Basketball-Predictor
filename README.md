@@ -15,6 +15,8 @@ college hoops fan + machine learning interest = motivation to work on this
 - sqlite3
 
 ### Current Tasks
+- [ ] problem where a team shoots no free throws in a game and therefore has no
+free throw precentage.  Currently, these games are being dropped. 
 - [ ] script to fill the database with all past seasons
 - [ ] expand database to contain all teams
 - [ ] add the ability to retrieve game data when given a team, season, and game number
