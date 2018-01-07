@@ -165,8 +165,11 @@ class GamelogHTMLParser(HTMLParser):
       if len( self.rowData ) == self.FullRowSize - 1:
         self.rowData.insert(2, 'H')
 
-      # only append the game to the season if the opponent link was found
-      if self.opponentLinkFound == True:
+      # only append the game to the season if the opponent link was found and
+      # the row is the correct size (there are instances where values are
+      # missing, don't add these games to the season)
+      if self.opponentLinkFound == True and \
+          len(self.rowData) == self.FullRowSize:
         self.seasonData.append(self.rowData) # append entire row to season data
         self.opponentLinkFound = False       # reset back to false
 
