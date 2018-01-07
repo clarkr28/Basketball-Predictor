@@ -19,7 +19,7 @@ if __name__ == '__main__':
   for team in teamsList:
 
     team = team.strip() # strip to avoid whitespace
-    season = getCurrentSeason( team ) # get the current season by for the team
+    season = getSeason( team, 2018 ) # get the current season by for the team
     # insert the team's name at the beginning of each row
     for row in season:
       row = row.insert( 0, team )
