@@ -93,7 +93,15 @@ class SchoolsHTMLParser(HTMLParser):
 
     # move current state to in row if necessary
     elif self.currState == ParserState.InTableBody and tag == 'tr':
-      self.currState = ParserState.InRow
+      headerRow = False   # initialize to false
+      for att in attrs:
+        # there are header rows throughout the table, avoid them by 
+        # checking the class labels
+        if att[0] == 'class' and att[1] == 'thead':
+          headerRow = True
+
+      if not headerRow:
+        self.currState = ParserState.InRow
 
     # if we are in a row, check to see if the starttag is a link (a)
     elif self.currState == ParserState.InRow and tag == 'a':
