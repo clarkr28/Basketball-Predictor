@@ -32,14 +32,13 @@ returns a table containing all of the schools on the sports-reference.com
 page for basketball
 """
 def getSchools():
-  
+
   # make the get request to get the HTML
   response = requests.get( UrlSchools )
   # create the parser and feed the response into the parser
   parser = SchoolsHTMLParser()
   parser.feed( response.text )
   # get the final table from the parser
-  table = parser.getTable() 
+  table = parser.getTable()
   # return the table
   return table
-
