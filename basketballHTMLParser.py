@@ -30,45 +30,20 @@ def isInt(x):
 class ParserState(Enum):
   # define all of the states
   NotInTable = 1
-  InTable = 2 
+  InTable = 2
   InTableBody = 3
   InRow = 4
   InSmall = 5
   InOpponent = 6
+  InGameLocation = 7
 
 
 
 class GamelogHTMLParser(HTMLParser):
-
-  # id of the table
-  TableId = 'sgl-basic'
-
-  # id of the opponent cell
-  OpponentId = 'opp_id'
-
-  # full size of a row
-  FullRowSize = 39
-
-  # True if there was a link to the opponent's page - if there was no link, 
-  # that means sports-reference.com does not have data for that team.  If this
-  # is the case, don't add the game to the season's data b/c there is no way 
-  # to get more information about the team
-  opponentLinkFound = False
-
-  # holds the state of where the parser is
-  currState = ParserState.NotInTable
-
-  # holds the data for the current row
-  rowData = []
-
-  # all of the data for the team's season
-  seasonData = []
-
- 
   # initialization
   def __init__(self):
 
-    HTMLParser.__init__(self)  # call the base class initialization 
+    HTMLParser.__init__(self)  # call the base class initialization
 
     # id of the table
     self.TableId = 'sgl-basic'
@@ -76,21 +51,31 @@ class GamelogHTMLParser(HTMLParser):
     # id of the opponent cell
     self.OpponentId = 'opp_id'
 
+    # id of the game location cell
+    self.GameLocationId = 'game_location'
+
     # full size of a row
     self.FullRowSize = 39
 
-    # initialize to false
+    # True if there was a link to the opponent's page - if there was no link,
+    # that means sports-reference.com does not have data for that team.  If this
+    # is the case, don't add the game to the season's data b/c there is no way
+    # to get more information about the team
     self.opponentLinkFound = False
 
     # holds the state of where the parser is
     self.currState = ParserState.NotInTable
+
+    # the game location cell is blank for home games. This variable is used
+    # to see if the cell was blank.  Initialize it to False
+    self.gameLocationFound = False
 
     # holds the data for the current row
     self.rowData = []
 
     # all of the data for the team's season
     self.seasonData = []
-  
+
 
 
   # return the entire data table
@@ -101,7 +86,7 @@ class GamelogHTMLParser(HTMLParser):
 
   def handle_starttag(self, tag, attrs):
 
-    # if not in a table and the current tag is a table, make sure this is 
+    # if not in a table and the current tag is a table, make sure this is
     # the correct table by checking the table id.
     if self.currState == ParserState.NotInTable and tag == 'table':
       # make sure the table id is the correct id
@@ -122,12 +107,15 @@ class GamelogHTMLParser(HTMLParser):
     elif self.currState == ParserState.InRow and tag == 'small':
       self.currState = ParserState.InSmall
 
-    # move current state to inOpponent if necessary
+    # move current state to inOpponent or inGameLocation if necessary
     elif self.currState == ParserState.InRow and tag == 'td':
-      # see if the cell id is the opponent id
       for att in attrs:
+        # see if the cell id is the opponent id
         if att[0] == 'data-stat' and att[1] == self.OpponentId:
           self.currState = ParserState.InOpponent
+        # see if the cell id is the game location id
+        if att[0] == 'data-stat' and att[1] == self.GameLocationId:
+          self.currState = ParserState.InGameLocation
 
     # if current state is in opponent and tag is a link, add href to data row
     elif self.currState == ParserState.InOpponent and tag == 'a':
@@ -140,7 +128,7 @@ class GamelogHTMLParser(HTMLParser):
           self.opponentLinkFound = True
 
 
-		
+
   def handle_endtag(self, tag):
 
     # if currently in a table and the current tag is a table, set the current
@@ -153,17 +141,11 @@ class GamelogHTMLParser(HTMLParser):
     elif self.currState == ParserState.InTableBody and tag == 'tbody':
       self.currState = ParserState.InTable
 
-    # if currently in a row and current tag is a (table row), set the 
+    # if currently in a row and current tag is a (table row), set the
     # current state to being in a table body, then insert the completed row
     # into the season data list
     elif self.currState == ParserState.InRow and tag == 'tr':
       self.currState = ParserState.InTableBody
-
-      # a home game leaves the game location field blank, which does not get
-      # added to the list.  So if the size of the list is 1 smaller than it
-      # should be, insert a 'H' into the row to show it as a home game.
-      if len( self.rowData ) == self.FullRowSize - 1:
-        self.rowData.insert(2, 'H')
 
       # only append the game to the season if the opponent link was found and
       # the row is the correct size (there are instances where values are
@@ -172,6 +154,7 @@ class GamelogHTMLParser(HTMLParser):
           len(self.rowData) == self.FullRowSize:
         self.seasonData.append(self.rowData) # append entire row to season data
         self.opponentLinkFound = False       # reset back to false
+        self.gameLocationFound = False       # reset back to false
 
       self.rowData = []                    # set to empty for next row
 
@@ -183,12 +166,20 @@ class GamelogHTMLParser(HTMLParser):
     elif self.currState == ParserState.InOpponent and tag == 'td':
       self.currState = ParserState.InRow
 
+    # handling for leaving the InGameLocation state
+    elif self.currState == ParserState.InGameLocation and tag == 'td':
+      # If a data value was not found, set it as a home game
+      if self.gameLocationFound == False:
+        self.rowData.append('H')
+      self.currState = ParserState.InRow
+
 
 
   def handle_data(self, data):
 
     # if currently in a row, save the data to the row list
-    if self.currState == ParserState.InRow:
+    if self.currState == ParserState.InRow or \
+        self.currState == ParserState.InGameLocation:
       # if the data is an integer, put it in the list as in integer
       if isInt(data):
         self.rowData.append( int(data) )
@@ -198,3 +189,8 @@ class GamelogHTMLParser(HTMLParser):
       # if neither an int or float, leave data as a string
       else:
         self.rowData.append( data )
+
+    if self.currState == ParserState.InGameLocation:
+      self.gameLocationFound = True
+      
+

@@ -6,7 +6,7 @@ from dbMethods import createDBConnection, updateDBSeason
 TeamsFileName = 'teams.txt'
 
 if __name__ == '__main__':
-  
+
   # open the file containing all the team urls and names
   teams = open( TeamsFileName, 'r' )
   teamsList = teams.readlines() # get a list of all lines in the file
@@ -14,7 +14,7 @@ if __name__ == '__main__':
 
   # open a connection to the database
   dbConn = createDBConnection()
-  
+
   # for every team, get their current season's games
   for team in teamsList:
 
@@ -27,9 +27,8 @@ if __name__ == '__main__':
     # print the team name and year of the team
     print( season[0][0], season[0][1] )
 
-    # update the database with any new games 
+    # update the database with any new games
     updateDBSeason( dbConn, season )
 
   # close the database connection
   dbConn.close()
-
