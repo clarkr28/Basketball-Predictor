@@ -19,9 +19,9 @@ def getSeason( teamUrl, year ):
   parser.feed( response.text )
   table = parser.getTable()     # get the final table from the parser
 
-  # insert the season year at the front of the table
+  # insert the season year and team Url at the front of the table
   for row in table:
-    row = row.insert( 0, year )
+    row[0:0] = [teamUrl, year]
 
   return table
 

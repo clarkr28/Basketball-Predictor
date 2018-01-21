@@ -37,7 +37,6 @@ def createDBConnection():
          PRIMARY KEY(SCHOOL, SEASON, GAME_NUM) ) ''' )
   except Error as e:
     # an error will be thrown if the table already exists
-    print('error in dbMethods::createDBConnection')
     print(e)
 
   conn.commit() # commit changes
@@ -50,18 +49,61 @@ def createDBConnection():
 insert any new games from the season into the database.  
 param: dbConn - a connection to the database
 param: fullSeasonData - a 2D list of all games in a season for a given team
+return: number of games added to the database
 """
 def updateDBSeason( conn, fullSeasonData ):
 
-  # for now, just insert the entire season into the database
+  # if the season data is empty, return
+  if len(fullSeasonData) == 0:
+    return
+
+  schoolName = fullSeasonData[0][0]
+  seasonYear = fullSeasonData[0][1]
+  curs = conn.cursor()
+
+  # get the most recent game stored in the database (highest game number)
+  query = 'SELECT GAME_NUM FROM ' + TableName + \
+      ' WHERE SCHOOL=? AND SEASON=? ORDER BY GAME_NUM DESC'
+  curs.execute( query, (schoolName, seasonYear) )
+
+  gameNums = curs.fetchall()
+  gameNumMax = 0 if len(gameNums) == 0 else gameNums[0][0]
+
+  # find all of the games that need to be added to the database
+  gamesToAdd = [game for game in fullSeasonData if game[2] > gameNumMax]
+
+  if len( gamesToAdd ) > 0:
+    # add the games to the database
+    query = 'INSERT INTO ' + TableName + ' VALUES (?,?,?,?,?,?,?,?,?,?,?,' + \
+        '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)' 
+    try:
+      curs.executemany( query, gamesToAdd )
+    except Error as e:
+      print( 'error in dbMethods::updateDBSeason' )
+      print( e )
+
+  conn.commit()
+  curs.close()
+
+  return len( gamesToAdd )
+
+
+
+"""
+insert an entire season into the database
+param1: conn, the database connection
+param2: fullSeasonData, the team's entire season data
+"""
+def addFullSeason( conn, fullSeasonData ):
+
   curs = conn.cursor()
   query = 'INSERT INTO ' + TableName + ' VALUES (?,?,?,?,?,?,?,?,?,?,?,' + \
       '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)' 
   try:
-    curs.executemany(query, fullSeasonData)
+    curs.executemany( query, fullSeasonData )
   except Error as e:
-    print('error in dbMethods::updateDBSeason')
-    print(e)
+    print( 'error in dbMethods::addFullSeason' )
+    print( e )
 
   conn.commit()
   curs.close()

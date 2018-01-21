@@ -1,41 +1,41 @@
-school name TEXT
-season year INTEGER
-game number INTEGER
-date INTEGER
-location TEXT
-opponent TEXT
-game result TEXT
-school points INTEGER
-opponent points INTEGER
-school field goals (SFG) INTEGER
-school field goal attempts (SFGA) INTEGER
-school field goal percentage (SFGP) REAL
-school 3-point field goals (S3P) INTEGER
-school 3-point attempts (S3PA) INTEGER
-school 3-point percentage (S3PP) REAL
-school free throws (SFT) INTEGER
-school free throw attempts (SFTA) INTEGER
-school free throw percentage (SFTP) REAL
-school offensive rebounds (SORB) INTEGER
-school total rebounds (STRB) INTEGER
-school assists (SAST) INTEGER
-school steals (SSTL) INTEGER
-school blocks (SBLK) INTEGER
-school turnovers (STOV) INTEGER
-school personal fouls (SPF) INTEGER
-opponent field goals (OFG) INTEGER
-opponent field goal attempts (OFGA) INTEGER
-opponent field goal percentage (OFGP) REAL
-opponent 3-point field goals (O3P) INTEGER
-opponent 3-point attempts (O3PA) INTEGER
-opponent 3-point percentage (O3PP) REAL
-opponent free throws (OFT) INTEGER
-opponent free throw attempts (OFTA) INTEGER
-opponent free throw percentage (OFTP) REAL
-opponent offensive rebounds (OORB) INTEGER
-opponent total rebounds (OTRB) INTEGER
-opponent assists (OAST) INTEGER
-opponent steals (OSTL) INTEGER
-opponent blocks (OBLK) INTEGER
-opponent turnovers (OTOV) INTEGER
-opponent personal fouls (OPF) INTEGER
+SCHOOL TEXT
+SEASON INTEGER
+GAME_NUM INTEGER
+DATE INTEGER
+LOCATION TEXT
+OPPONENT TEXT
+GAME_RESULT TEXT
+SCHOOL_PTS INTEGER
+OPPONENT_PTS INTEGER
+SFG   school field goals INTEGER
+SFGA  school field goal attempts INTEGER
+SFGP  school field goal percentage REAL
+S3P   school 3-point field goals INTEGER
+S3PA  school 3-point attempts INTEGER
+S3PP  school 3-point percentage REAL
+SFT   school free throws INTEGER
+SFTA  school free throw attempts INTEGER
+SFTP  school free throw percentage REAL
+SORB  school offensive rebounds INTEGER
+STRB  school total rebounds INTEGER
+SAST  school assists INTEGER
+SSTL  school steals INTEGER
+SBLK  school blocks INTEGER
+STOV  school turnovers INTEGER
+SPF   school personal fouls INTEGER
+OFG   opponent field goals INTEGER
+OFGA  opponent field goal attempts INTEGER
+OFGP  opponent field goal percentage REAL
+O3P   opponent 3-point field goals INTEGER
+O3PA  opponent 3-point attempts INTEGER
+O3PP  opponent 3-point percentage REAL
+OFT   opponent free throws INTEGER
+OFTA  opponent free throw attempts INTEGER
+OFTP  opponent free throw percentage REAL
+OORB  opponent offensive rebounds INTEGER
+OTRB  opponent total rebounds INTEGER
+OAST  opponent assists INTEGER
+OSTL  opponent steals INTEGER
+OBLK  opponent blocks INTEGER
+OTOV  opponent turnovers INTEGER
+OPF   opponent personal fouls INTEGER

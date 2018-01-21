@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-from getHTML import *
-from dbMethods import createDBConnection, updateDBSeason
+from getHTML import getSeason
+from dbMethods import createDBConnection, addFullSeason 
 
-TeamsFileName = 'teams.txt'
+TeamsFileName = 'allSchools.txt'
 
 """
 The purpose of this script is to create and completely fill the database
@@ -28,15 +28,12 @@ if __name__ == '__main__':
 
       season = getSeason( team, year )
 
-      # insert the team's name at the beginning of each row
-      for row in season:
-        row = row.insert( 0, team )
-
       # print the team name and year of the season
-      print( season[0][0], season[0][1] )
+      print( team, year )
 
-      # update the database with any new games
-      updateDBSeason( dbConn, season )
+      # add all games to the database, if there are any
+      if len( season ) > 0:
+        addFullSeason( dbConn, season )
 
   # close the database connection
   dbConn.close()

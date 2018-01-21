@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 
-from getHTML import *
+from getHTML import getSeason
 from dbMethods import createDBConnection, updateDBSeason
 
-TeamsFileName = 'teams.txt'
+TeamsFileName = 'allSchools.txt'
 
 if __name__ == '__main__':
 
@@ -20,15 +20,15 @@ if __name__ == '__main__':
 
     team = team.strip() # strip to avoid whitespace
     season = getSeason( team, 2018 ) # get the current season by for the team
-    # insert the team's name at the beginning of each row
-    for row in season:
-      row = row.insert( 0, team )
+
+    # if there are games in the season, update the database with new games
+    gamesAdded = 0
+    if len( season ) > 0:
+      gamesAdded = updateDBSeason( dbConn, season )
 
     # print the team name and year of the team
-    print( season[0][0], season[0][1] )
+    print( season[0][0], season[0][1], gamesAdded )
 
-    # update the database with any new games
-    updateDBSeason( dbConn, season )
 
   # close the database connection
   dbConn.close()
