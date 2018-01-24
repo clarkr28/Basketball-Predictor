@@ -26,8 +26,8 @@ if __name__ == '__main__':
     if len( season ) > 0:
       gamesAdded = updateDBSeason( dbConn, season )
 
-    # print the team name and year of the team
-    print( season[0][0], season[0][1], gamesAdded )
+      # print the team name and year of the team
+      print( season[0][0], season[0][1], gamesAdded )
 
 
   # close the database connection
