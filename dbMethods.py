@@ -18,22 +18,22 @@ def createDBConnection():
 
   # try creating the table
   try:
-    curs.execute('CREATE TABLE ' + TableName + ''' (SCHOOL TEXT NOT NULL, 
-         SEASON INTEGER NOT NULL, GAME_NUM INTEGER NOT NULL, 
-         DATE TEXT NOT NULL, LOCATION TEXT NOT NULL, OPPONENT TEXT NOT NULL, 
-         GAME_RESULT TEXT NOT NULL, SCHOOL_PTS INTEGER NOT NULL, 
+    curs.execute('CREATE TABLE ' + TableName + ''' (SCHOOL TEXT NOT NULL,
+         SEASON INTEGER NOT NULL, GAME_NUM INTEGER NOT NULL,
+         DATE TEXT NOT NULL, LOCATION TEXT NOT NULL, OPPONENT TEXT NOT NULL,
+         GAME_RESULT TEXT NOT NULL, SCHOOL_PTS INTEGER NOT NULL,
          OPPONENT_PTS INTEGER NOT NULL, SFG INTEGER NOT NULL,
-         SFGA INTEGER NOT NULL, SFGP REAL NOT NULL, S3P INTEGER NOT NULL, 
-         S3PA INTEGER NOT NULL, S3PP REAL NOT NULL, SFT INTEGER NOT NULL, 
-         SFTA INTEGER NOT NULL, SFTP REAL NOT NULL, SORB INTEGER NOT NULL, 
-         STRB INTEGER NOT NULL, SAST INTEGER NOT NULL, SSTL INTEGER NOT NULL, 
+         SFGA INTEGER NOT NULL, SFGP REAL NOT NULL, S3P INTEGER NOT NULL,
+         S3PA INTEGER NOT NULL, S3PP REAL NOT NULL, SFT INTEGER NOT NULL,
+         SFTA INTEGER NOT NULL, SFTP REAL NOT NULL, SORB INTEGER NOT NULL,
+         STRB INTEGER NOT NULL, SAST INTEGER NOT NULL, SSTL INTEGER NOT NULL,
          SBLK INTEGER NOT NULL, STOV INTEGER NOT NULL, SPF INTEGER NOT NULL,
-         OFG INTEGER NOT NULL, OFGA INTEGER NOT NULL, OFGP REAL NOT NULL, 
-         O3P INTEGER NOT NULL, O3PA INTEGER NOT NULL, O3PP REAL NOT NULL, 
-         OFT INTEGER NOT NULL, OFTA INTEGER NOT NULL, OFTP REAL NOT NULL, 
-         OORB INTEGER NOT NULL, OTRB INTEGER NOT NULL, OAST INTEGER NOT NULL, 
-         OSTL INTEGER NOT NULL, OBLK INTEGER NOT NULL, OTOV INTEGER NOT NULL, 
-         OPF INTEGER NOT NULL, 
+         OFG INTEGER NOT NULL, OFGA INTEGER NOT NULL, OFGP REAL NOT NULL,
+         O3P INTEGER NOT NULL, O3PA INTEGER NOT NULL, O3PP REAL NOT NULL,
+         OFT INTEGER NOT NULL, OFTA INTEGER NOT NULL, OFTP REAL NOT NULL,
+         OORB INTEGER NOT NULL, OTRB INTEGER NOT NULL, OAST INTEGER NOT NULL,
+         OSTL INTEGER NOT NULL, OBLK INTEGER NOT NULL, OTOV INTEGER NOT NULL,
+         OPF INTEGER NOT NULL,
          PRIMARY KEY(SCHOOL, SEASON, GAME_NUM) ) ''' )
   except Error as e:
     # an error will be thrown if the table already exists
@@ -46,7 +46,7 @@ def createDBConnection():
 
 
 """
-insert any new games from the season into the database.  
+insert any new games from the season into the database.
 param: dbConn - a connection to the database
 param: fullSeasonData - a 2D list of all games in a season for a given team
 return: number of games added to the database
@@ -75,7 +75,7 @@ def updateDBSeason( conn, fullSeasonData ):
   if len( gamesToAdd ) > 0:
     # add the games to the database
     query = 'INSERT INTO ' + TableName + ' VALUES (?,?,?,?,?,?,?,?,?,?,?,' + \
-        '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)' 
+        '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
     try:
       curs.executemany( query, gamesToAdd )
     except Error as e:
@@ -98,7 +98,7 @@ def addFullSeason( conn, fullSeasonData ):
 
   curs = conn.cursor()
   query = 'INSERT INTO ' + TableName + ' VALUES (?,?,?,?,?,?,?,?,?,?,?,' + \
-      '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)' 
+      '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
   try:
     curs.executemany( query, fullSeasonData )
   except Error as e:
@@ -114,7 +114,10 @@ def addFullSeason( conn, fullSeasonData ):
 
 """
 get a game based on the school name, year, and game number
-param
+param conn: The database connection
+param schoolName: The name the database uses for the school (str)
+param year: The season year (int)
+param gameNumber: The game number of the season (int)
 return list of stats for the game
 """
 def getGameByNumber( conn, schoolName, year, gameNumber ):
@@ -122,7 +125,36 @@ def getGameByNumber( conn, schoolName, year, gameNumber ):
   curs = conn.cursor()
   query = 'SELECT * FROM ' + TableName + \
       ' WHERE SCHOOL=? and SEASON=? and  GAME_NUM=?'
-  curs.execute( query, (schoolName, year, gameNumber) )
+  try:
+    curs.execute( query, (schoolName, year, gameNumber) )
+  except Error as e:
+    print('error in dbMethods::getGameByNumber')
+    print(e)
 
   return curs.fetchall()
 
+
+
+"""
+get the specified values for a game based on the user's input and
+game specification
+param conn: The database connection
+param schoolName: The name the database uses for the school (str)
+param year: The season year (int)
+param gameNumber: The game number of the season (int)
+param columns: The columns to get from the database, separaged by commas.
+return: 1D list of valus from the game
+"""
+def getCustomGameByNumber( conn, schoolName, year, gameNumber, columns):
+
+  curs = conn.cursor()
+  query = 'SELECT ? FROM ' + Tablename + ' WHERE SCHOOL=? and SEASON=? and ' + \
+  ' GAME_NUM=?'
+  try:
+    curs.execute( query, (columns, schoolName, year, gameNumber) )
+  except Error as e:
+    print('error in dbMethods::getGameByNumber')
+    print(e)
+
+  return curs.fetchall()
+  
