@@ -14,16 +14,16 @@ param: year int - the season year to retrieve
 return: table where each row contains the stats for a game
 """
 def getSeason( teamUrl, year ):
-  response = requests.get( UrlSchools + teamUrl + '/' + str(year) + GamelogTag )
-  parser = GamelogHTMLParser()
-  parser.feed( response.text )
-  table = parser.getTable()     # get the final table from the parser
+    response = requests.get( UrlSchools + teamUrl + '/' + str(year) + GamelogTag )
+    parser = GamelogHTMLParser()
+    parser.feed( response.text )
+    table = parser.getTable()     # get the final table from the parser
 
-  # insert the season year and team Url at the front of the table
-  for row in table:
-    row[0:0] = [teamUrl, year]
+    # insert the season year and team Url at the front of the table
+    for row in table:
+        row[0:0] = [teamUrl, year]
 
-  return table
+    return table
 
 
 
@@ -33,12 +33,12 @@ page for basketball
 """
 def getSchools():
 
-  # make the get request to get the HTML
-  response = requests.get( UrlSchools )
-  # create the parser and feed the response into the parser
-  parser = SchoolsHTMLParser()
-  parser.feed( response.text )
-  # get the final table from the parser
-  table = parser.getTable()
-  # return the table
-  return table
+    # make the get request to get the HTML
+    response = requests.get( UrlSchools )
+    # create the parser and feed the response into the parser
+    parser = SchoolsHTMLParser()
+    parser.feed( response.text )
+    # get the final table from the parser
+    table = parser.getTable()
+    # return the table
+    return table
