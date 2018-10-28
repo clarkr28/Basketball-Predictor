@@ -148,12 +148,30 @@ return: 1D list of valus from the game
 def getCustomGameByNumber( conn, schoolName, year, gameNumber, columns):
 
     curs = conn.cursor()
-    query = 'SELECT ? FROM ' + Tablename + ' WHERE SCHOOL=? and SEASON=? and ' + \
+    query = 'SELECT ? FROM ' + TableName + ' WHERE SCHOOL=? and SEASON=? and ' + \
     ' GAME_NUM=?'
     try:
         curs.execute( query, (columns, schoolName, year, gameNumber) )
     except Error as e:
         print('error in dbMethods::getGameByNumber')
+        print(e)
+
+    return curs.fetchall()
+
+"""
+get a random amount of games from the database
+param conn: The database connection
+parm count: The number of games to be retrieved (int)
+return: a list of games
+"""
+def getRandomGames( conn, count ):
+
+    curs = conn.cursor()
+    query = 'SELECT * FROM ' + TableName + ' ORDER BY RANDOM() LIMIT ?'
+    try:
+        curs.execute( query, (count) )
+    except Error as e:
+        print('error in dbMethods::getRandomGames')
         print(e)
 
     return curs.fetchall()
