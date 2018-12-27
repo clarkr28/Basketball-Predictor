@@ -169,7 +169,7 @@ def getRandomGames( conn, count ):
     curs = conn.cursor()
     query = 'SELECT * FROM ' + TableName + ' ORDER BY RANDOM() LIMIT ?'
     try:
-        curs.execute( query, (count) )
+        curs.execute( query, (count,) )
     except Error as e:
         print('error in dbMethods::getRandomGames')
         print(e)
